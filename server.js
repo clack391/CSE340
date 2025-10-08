@@ -1,15 +1,16 @@
 const path = require("path")
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
+const cookieParser = require("cookie-parser")
 require("dotenv").config()
 const session = require("express-session")
-const pool = require('./database/')
+const pool = require("./database/")
 
 const utilities = require("./utilities")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const errorRoute = require("./routes/errorRoute")
-const accountRoute = require("./routes/accountRoute") // unit 4 deliver login activity
+const accountRoute = require("./routes/accountRoute")
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -23,7 +24,9 @@ app.set("layout", "./layouts/layout")
 /* ***********************
  * Middleware
  * ************************/
- app.use(session({
+app.use(cookieParser())
+
+app.use(session({
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,
     pool,
@@ -43,6 +46,9 @@ app.use(function(req, res, next){
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// auth state middleware
+app.use(utilities.checkJWTToken)
 
 // Static
 app.use(express.static(path.join(__dirname, "public")))

@@ -1,4 +1,6 @@
+const jwt = require("jsonwebtoken")
 const invModel = require("../models/inventory-model")
+const accountModel = require("../models/account-model")
 const Util = {}
 
 /* ************************
@@ -124,3 +126,58 @@ Util.buildVehicleDetail = function(vehicle) {
  * General Error Handling
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
+/* ****************************************
+ * Check for a valid JWT and set login state
+ **************************************** */
+Util.checkJWTToken = async function (req, res, next) {
+  const token = req.cookies?.jwt
+  if (!token) {
+    res.locals.loggedin = false
+    return next()
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+    const accountData = await accountModel.getAccountById(decodedToken.account_id)
+
+    if (!accountData) {
+      res.clearCookie("jwt")
+      res.locals.loggedin = false
+      return next()
+    }
+
+    res.locals.accountData = accountData
+    res.locals.loggedin = true
+    req.accountData = accountData
+  } catch (error) {
+    console.error("JWT verification failed:", error)
+    res.clearCookie("jwt")
+    res.locals.loggedin = false
+  }
+
+  return next()
+}
+
+/* ****************************************
+ * Require authentication for protected routes
+ **************************************** */
+Util.requireAccountLogin = function (req, res, next) {
+  if (res.locals.loggedin) {
+    return next()
+  }
+  req.flash("notice", "Please log in to continue.")
+  return res.redirect("/account/login")
+}
+
+/* ****************************************
+ * Require employee or admin account type
+ **************************************** */
+Util.requireEmployeeAccount = function (req, res, next) {
+  const accountType = res.locals.accountData?.account_type
+  if (accountType === "Employee" || accountType === "Admin") {
+    return next()
+  }
+  req.flash("notice", "You do not have permission to access that resource.")
+  return res.redirect("/account/login")
+}
