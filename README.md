@@ -54,4 +54,3 @@ The application seeds three accounts on startup so graders can log in immediatel
 - Email: `happy@340.edu` Password: `I@mAnEmpl0y33` Role: Employee
 - Email: `manager@340.edu` Password: `I@mAnAdm!n1strat0r` Role: Admin
 
-If you change any of these credentials, delete the records from the `account` table before restarting so the seeding routine can recreate them.
