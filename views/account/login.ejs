@@ -26,19 +26,12 @@
 
     <div class="form-field">
       <label for="account_password">Password</label>
-      <div id="login-password-help" class="form-note">
-        Passwords must be at least 12 characters and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.
-      </div>
       <input
         type="password"
         id="account_password"
         name="account_password"
         autocomplete="current-password"
         placeholder="Password"
-        minlength="12"
-        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
-        title="12+ characters with uppercase, lowercase, number, and special character"
-        aria-describedby="login-password-help"
         required
       >
     </div>

@@ -11,6 +11,7 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const errorRoute = require("./routes/errorRoute")
 const accountRoute = require("./routes/accountRoute")
+const { ensureDefaultAccounts } = require("./utilities/seed-default-accounts")
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -80,6 +81,12 @@ app.use(async (err, req, res, next) => {
   }
 })
 
-app.listen(port, () => {
-  console.log(`app listening on ${host}:${port}`)
-})
+ensureDefaultAccounts()
+  .catch((error) => {
+    console.error("Failed to ensure default accounts:", error)
+  })
+  .finally(() => {
+    app.listen(port, () => {
+      console.log(`app listening on ${host}:${port}`)
+    })
+  })

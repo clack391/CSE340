@@ -45,3 +45,13 @@ When you installed Git and cloned the remote repository in week 1, you should ha
 1. Go to http://localhost:5500 in a browser tab. Nothing should be visible as the server has not been setup to repond to that route.
 2. Add "/filename.html" to the end of the URL (replacing filename with the name of the file you moved to the public folder).
 3. You should see that page in the browser.
+
+## Instructor Test Accounts
+
+The application seeds three accounts on startup so graders can log in immediately:
+
+- Email: `basic@340.edu` Password: `I@mABas1cCl!3nt` Role: Client
+- Email: `happy@340.edu` Password: `I@mAnEmpl0y33` Role: Employee
+- Email: `manager@340.edu` Password: `I@mAnAdm!n1strat0r` Role: Admin
+
+If you change any of these credentials, delete the records from the `account` table before restarting so the seeding routine can recreate them.
