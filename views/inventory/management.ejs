@@ -5,5 +5,8 @@
   <nav class="inventory-actions" aria-label="Inventory management actions">
     <a class="btn btn-primary" href="/inv/add-classification">Add New Classification</a>
     <a class="btn btn-secondary" href="/inv/add-inventory">Add New Vehicle</a>
+    <% if (showAnalyticsLink) { %>
+      <a class="btn btn-secondary" href="/inv/analytics">View Analytics Dashboard</a>
+    <% } %>
   </nav>
 </section>

@@ -10,6 +10,11 @@ const requireInventoryAccess = [
   utilities.requireEmployeeAccount,
 ]
 
+const requireAdminInventoryAccess = [
+  utilities.requireAccountLogin,
+  utilities.requireAdminAccount,
+]
+
 // Management view
 router.get(
   "/",
@@ -47,6 +52,13 @@ router.post(
   invValidate.inventoryRules(),
   invValidate.checkInventoryData,
   utilities.handleErrors(invController.createInventory)
+)
+
+// Analytics dashboard (admin only)
+router.get(
+  "/analytics",
+  ...requireAdminInventoryAccess,
+  utilities.handleErrors(invController.buildAnalyticsDashboard)
 )
 
 // Inventory by classification

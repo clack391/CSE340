@@ -1,0 +1,111 @@
+<section class="inventory-analytics">
+  <h1><%= title %></h1>
+  <%- messages() %>
+
+  <p class="inventory-analytics__lead">
+    Quick overview of current inventory performance. All metrics reflect live inventory data.
+  </p>
+
+  <div class="inventory-analytics__actions">
+    <a class="btn btn-secondary" href="/inv">Back to Management</a>
+  </div>
+
+  <% const currencyFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }); %>
+  <% const numberFmt = new Intl.NumberFormat('en-US'); %>
+
+  <section class="inventory-analytics__section">
+    <h2>Key Metrics</h2>
+    <ul class="inventory-analytics__metrics">
+      <li>
+        <span class="metric-label">Total Vehicles</span>
+        <span class="metric-value"><%= numberFmt.format(metrics.totalVehicles) %></span>
+      </li>
+      <li>
+        <span class="metric-label">Inventory Value</span>
+        <span class="metric-value"><%= currencyFmt.format(metrics.totalValue) %></span>
+      </li>
+      <li>
+        <span class="metric-label">Average Price</span>
+        <span class="metric-value"><%= currencyFmt.format(metrics.averagePrice) %></span>
+      </li>
+      <li>
+        <span class="metric-label">Average Mileage</span>
+        <span class="metric-value"><%= numberFmt.format(Math.round(metrics.averageMileage)) %> miles</span>
+      </li>
+      <li>
+        <span class="metric-label">Highest Price</span>
+        <span class="metric-value"><%= currencyFmt.format(metrics.highestPrice) %></span>
+      </li>
+      <li>
+        <span class="metric-label">Lowest Price</span>
+        <span class="metric-value"><%= currencyFmt.format(metrics.lowestPrice) %></span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="inventory-analytics__section">
+    <h2>Inventory By Classification</h2>
+    <% if (classificationStats.length) { %>
+      <div class="inventory-analytics__table-wrap">
+        <table class="inventory-analytics__table">
+          <thead>
+            <tr>
+              <th scope="col">Classification</th>
+              <th scope="col">Vehicles</th>
+              <th scope="col">Average Price</th>
+              <th scope="col">Total Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% classificationStats.forEach((row) => { %>
+              <tr>
+                <th scope="row"><%= row.classification_name %></th>
+                <td><%= numberFmt.format(row.vehicle_count) %></td>
+                <td><%= currencyFmt.format(row.average_price) %></td>
+                <td><%= currencyFmt.format(row.total_value) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="notice">No classification data available.</p>
+    <% } %>
+  </section>
+
+  <section class="inventory-analytics__section">
+    <h2>Top Priced Vehicles</h2>
+    <% if (topVehicles.length) { %>
+      <div class="inventory-analytics__table-wrap">
+        <table class="inventory-analytics__table">
+          <thead>
+            <tr>
+              <th scope="col">Vehicle</th>
+              <th scope="col">Year</th>
+              <th scope="col">Classification</th>
+              <th scope="col">Price</th>
+              <th scope="col">Mileage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% topVehicles.forEach((vehicle) => { %>
+              <tr>
+                <th scope="row">
+                  <a href="/inv/detail/<%= vehicle.inv_id %>">
+                    <%= vehicle.inv_make %> <%= vehicle.inv_model %>
+                  </a>
+                </th>
+                <td><%= vehicle.inv_year %></td>
+                <td><%= vehicle.classification_name %></td>
+                <td><%= currencyFmt.format(vehicle.inv_price) %></td>
+                <td><%= numberFmt.format(vehicle.inv_miles) %> miles</td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="notice">No vehicles available to display.</p>
+    <% } %>
+  </section>
+</section>

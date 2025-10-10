@@ -108,6 +108,78 @@ html, body{
 .reviews-list{ margin:0; padding-left:1.2rem; }
 .reviews-list li{ margin:.4rem 0; }
 
+/* Inventory analytics */
+.inventory-analytics{
+  display:grid;
+  gap:1.5rem;
+  margin:1rem 0 2rem;
+}
+.inventory-analytics__lead{
+  margin:0;
+  color:var(--muted);
+}
+.inventory-analytics__actions{
+  display:flex;
+  gap:.75rem;
+  flex-wrap:wrap;
+}
+.inventory-analytics__section{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1.25rem;
+  box-shadow:0 10px 30px rgba(15,35,95,.08);
+}
+.inventory-analytics__section h2{
+  margin-top:0;
+}
+.inventory-analytics__metrics{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:.75rem;
+}
+.inventory-analytics__metrics li{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  border-bottom:1px dashed var(--border);
+  padding-bottom:.35rem;
+}
+.inventory-analytics__metrics li:last-child{
+  border-bottom:none;
+  padding-bottom:0;
+}
+.inventory-analytics__metrics .metric-label{
+  font-weight:600;
+  color:var(--brand-900);
+}
+.inventory-analytics__metrics .metric-value{
+  font-family:'Roboto', sans-serif;
+}
+.inventory-analytics__table-wrap{
+  overflow-x:auto;
+}
+.inventory-analytics__table{
+  width:100%;
+  border-collapse:collapse;
+}
+.inventory-analytics__table th,
+.inventory-analytics__table td{
+  padding:.6rem .75rem;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  white-space:nowrap;
+}
+.inventory-analytics__table tbody tr:nth-child(even){
+  background:rgba(15,35,95,.04);
+}
+.inventory-analytics__table a{
+  color:inherit;
+  text-decoration:underline;
+}
+
 /* Footer */
 .site-footer{
   border:1px solid var(--border); border-radius:10px; margin: 1rem 0 1.25rem;

@@ -181,3 +181,15 @@ Util.requireEmployeeAccount = function (req, res, next) {
   req.flash("notice", "You do not have permission to access that resource.")
   return res.redirect("/account/login")
 }
+
+/* ****************************************
+ * Require admin account type
+ **************************************** */
+Util.requireAdminAccount = function (req, res, next) {
+  const accountType = res.locals.accountData?.account_type
+  if (accountType === "Admin") {
+    return next()
+  }
+  req.flash("notice", "Admin access required to view that page.")
+  return res.redirect("/inv")
+}

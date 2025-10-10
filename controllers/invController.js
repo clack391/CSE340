@@ -12,6 +12,7 @@ invCont.buildManagementView = async function (req, res, next) {
     title: "Inventory Management",
     nav,
     errors: null,
+    showAnalyticsLink: res.locals.accountData?.account_type === "Admin",
   })
 }
 
@@ -132,6 +133,53 @@ invCont.createInventory = async function (req, res) {
     classificationList,
     errors: null,
     ...req.body,
+  })
+}
+
+/* ***************************
+ *  Inventory analytics dashboard
+ * ************************** */
+invCont.buildAnalyticsDashboard = async function (req, res) {
+  const nav = await utilities.getNav()
+
+  const [metricsRaw, classificationSummary, topVehicles] = await Promise.all([
+    invModel.getInventorySummaryMetrics(),
+    invModel.getInventoryByClassificationSummary(),
+    invModel.getTopPricedVehicles(5),
+  ])
+
+  const metrics = metricsRaw
+    ? {
+        totalVehicles: Number(metricsRaw.total_vehicles) || 0,
+        totalValue: Number(metricsRaw.total_value) || 0,
+        averagePrice: Number(metricsRaw.average_price) || 0,
+        averageMileage: Number(metricsRaw.average_mileage) || 0,
+        highestPrice: Number(metricsRaw.highest_price) || 0,
+        lowestPrice: Number(metricsRaw.lowest_price) || 0,
+      }
+    : {
+        totalVehicles: 0,
+        totalValue: 0,
+        averagePrice: 0,
+        averageMileage: 0,
+        highestPrice: 0,
+        lowestPrice: 0,
+      }
+
+  const classificationStats = (classificationSummary || []).map((row) => ({
+    classification_id: row.classification_id,
+    classification_name: row.classification_name,
+    vehicle_count: Number(row.vehicle_count) || 0,
+    total_value: Number(row.total_value) || 0,
+    average_price: Number(row.average_price) || 0,
+  }))
+
+  res.render("./inventory/analytics", {
+    title: "Inventory Analytics",
+    nav,
+    metrics,
+    classificationStats,
+    topVehicles: topVehicles || [],
   })
 }
 
