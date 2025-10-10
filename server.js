@@ -81,12 +81,32 @@ app.use(async (err, req, res, next) => {
   }
 })
 
-ensureDefaultAccounts()
-  .catch((error) => {
-    console.error("Failed to ensure default accounts:", error)
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function seedDefaultAccountsWithRetry(
+  attempts = 5,
+  delayMs = 5_000
+) {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      await ensureDefaultAccounts()
+      console.log("Default accounts ensured")
+      return
+    } catch (error) {
+      console.error(
+        `Failed to ensure default accounts (attempt ${attempt}/${attempts}):`,
+        error
+      )
+      if (attempt < attempts) {
+        await wait(delayMs)
+      }
+    }
+  }
+}
+
+app.listen(port, () => {
+  console.log(`app listening on ${host}:${port}`)
+  seedDefaultAccountsWithRetry().catch((error) => {
+    console.error("Default account seeding failed after retries:", error)
   })
-  .finally(() => {
-    app.listen(port, () => {
-      console.log(`app listening on ${host}:${port}`)
-    })
-  })
+})
