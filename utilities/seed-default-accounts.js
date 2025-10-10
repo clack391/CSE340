@@ -28,32 +28,31 @@ const defaultAccounts = [
 
 async function ensureDefaultAccounts() {
   for (const account of defaultAccounts) {
-    const hashedPassword = await bcrypt.hash(account.plainPassword, 10)
     const existing = await pool.query(
       "SELECT account_id FROM account WHERE account_email = $1 LIMIT 1",
       [account.account_email]
     )
 
     if (existing.rowCount) {
+      // Keep any user-set passwords; only refresh profile details and role.
       await pool.query(
         `
           UPDATE account
           SET
             account_firstname = $1,
             account_lastname = $2,
-            account_password = $3,
-            account_type = $4
-          WHERE account_email = $5;
+            account_type = $3
+          WHERE account_email = $4;
         `,
         [
           account.account_firstname,
           account.account_lastname,
-          hashedPassword,
           account.account_type,
           account.account_email,
         ]
       )
     } else {
+      const hashedPassword = await bcrypt.hash(account.plainPassword, 10)
       await pool.query(
         `
           INSERT INTO account (

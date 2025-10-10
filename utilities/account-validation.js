@@ -3,6 +3,8 @@ const accountModel = require("../models/account-model")
 const { body, validationResult } = require("express-validator")
 
 const validate = {}
+const strongPasswordPattern =
+  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/
 
 /*  **********************************
   *  Registration Data Validation Rules
@@ -41,14 +43,12 @@ validate.registationRules = () => {
     body("account_password")
       .trim()
       .notEmpty()
-      .isStrongPassword({
-        minLength: 12,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      })
-      .withMessage("Password does not meet requirements."),
+      .withMessage("Password is required.")
+      .bail()
+      .matches(strongPasswordPattern)
+      .withMessage(
+        "Password must be 12+ characters with uppercase, lowercase, number, and special character."
+      ),
   ]
 }
 
@@ -84,17 +84,7 @@ validate.loginRules = () => {
       .isEmail()
       .normalizeEmail()
       .withMessage("Please provide a valid email address."),
-    body("account_password")
-      .trim()
-      .notEmpty()
-      .isStrongPassword({
-        minLength: 12,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      })
-      .withMessage("Password does not meet requirements."),
+    body("account_password").trim().notEmpty().withMessage("Password is required."),
   ]
 }
 
@@ -185,14 +175,12 @@ validate.passwordRules = () => {
     body("account_password")
       .trim()
       .notEmpty()
-      .isStrongPassword({
-        minLength: 12,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      })
-      .withMessage("Password does not meet requirements."),
+      .withMessage("Password is required.")
+      .bail()
+      .matches(strongPasswordPattern)
+      .withMessage(
+        "Password must be 12+ characters with uppercase, lowercase, number, and special character."
+      ),
     body("account_id").trim().notEmpty().isInt().withMessage("Invalid account."),
   ]
 }
